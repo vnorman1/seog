@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: http://vnorman1.github.io/seog/sitemap.xml

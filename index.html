@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="hu" class=""> <!-- A 'dark' class ide kerül JS-sel -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaDepth - SEO-OG Tester</title>
+
+    <!-- tailwind CSS és Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- tailwind Konfiguráció és Egyedi Stílusok -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { 'sans': ['Inter', 'sans-serif'], 'display': ['Archivo Black', 'sans-serif'], },
+                    boxShadow: { 'hard': '5px 5px 0px #000', 'hard-narancs': '5px 5px 0px #F97316' },
+                    colors: { 'királykék': '#2563EB', 'narancs': '#F97316', 'bézs': '#F5F5F4' },
+                }
+            }
+        }
+    </script>
+    <style>
+        .torn-edge-top { clip-path: url(#torn-top); }
+        .torn-edge-bottom { clip-path: url(#torn-bottom); }
+        .torn-frame { clip-path: url(#torn-frame); }
+        .preview-image-container { aspect-ratio: 1.91 / 1; }
+        /* Egyedi stílusok a brutálisabb megjelenéshez */
+        .brutal-btn { transition: all 0.15s ease-out; }
+        .brutal-btn:hover { transform: translate(5px, 5px); box-shadow: none !important; }
+        .brutal-btn:active { transform: translate(2px, 2px); }
+        select { -webkit-appearance: none; -moz-appearance: none; appearance: none;
+                 background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='4' stroke='%23000'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E");
+                 background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.25em; padding-right: 2.5rem; }
+        .dark select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='4' stroke='%23fff'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E"); }
+        /* Egyedi görgetősáv minden böngészőhöz */
+        html, body, * {
+            scrollbar-width: thin;
+            scrollbar-color: #2563EB #F5F5F4;
+        }
+        /* Chrome, Edge, Safari */
+        ::-webkit-scrollbar {
+            width: 12px;
+            background: #F5F5F4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #2563EB 60%, #F97316 100%);
+            border-radius: 8px;
+            border: 2px solid #F5F5F4;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #F97316 40%, #2563EB 100%);
+        }
+        ::-webkit-scrollbar-corner {
+            background: #F5F5F4;
+        }
+        /* Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: #2563EB #F5F5F4;
+        }
+        body.dark ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #F97316 60%, #2563EB 100%);
+            border: 2px solid #1a1a1a;
+        }
+        body.dark ::-webkit-scrollbar {
+            background: #1a1a1a;
+        }
+        body.dark ::-webkit-scrollbar-corner {
+            background: #1a1a1a;
+        }
+        body.dark, .dark * {
+            scrollbar-color: #F97316 #1a1a1a;
+        }
+    </style>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <meta name="description" content="MetaDepth: Ingyenes, reklámmentes SEO és Social meta tag elemző. Ellenőrizd weboldalad OG, Twitter és SEO beállításait, képelőnézetekkel, magyar nyelven, azonnal! Nincs adatlopás, nincs süti, csak tiszta elemzés.">
+    <meta property="og:title" content="MetaDepth - SEO & Social Meta Tag Analyzer">
+    <meta property="og:description" content="MetaDepth: Ingyenes, reklámmentes SEO és Social meta tag elemző. Ellenőrizd weboldalad OG, Twitter és SEO beállításait, képelőnézetekkel, magyar nyelven, azonnal!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://vnorman1.github.io/seog/">
+    <meta property="og:image" content="http://vnorman1.github.io/seog/og-image.png">
+    <meta property="og:site_name" content="MetaDepth">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MetaDepth - SEO & Social Meta Tag Analyzer">
+    <meta name="twitter:description" content="MetaDepth: Ingyenes, reklámmentes SEO és Social meta tag elemző. Ellenőrizd weboldalad OG, Twitter és SEO beállításait, képelőnézetekkel, magyar nyelven, azonnal!">
+    <meta name="twitter:image" content="http://vnorman1.github.io/seog/og-image.png">
+    <link rel="canonical" href="http://vnorman1.github.io/seog/">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "MetaDepth",
+      "url": "http://vnorman1.github.io/seog/",
+      "description": "MetaDepth: Ingyenes, reklámmentes SEO és Social meta tag elemző. Ellenőrizd weboldalad OG, Twitter és SEO beállításait, képelőnézetekkel, magyar nyelven, azonnal! Nincs adatlopás, nincs süti, csak tiszta elemzés.",
+      "author": {
+        "@type": "Person",
+        "name": "vnorman1"
+      },
+      "image": "http://vnorman1.github.io/seog/og-image.png",
+      "inLanguage": "hu"
+    }
+    </script>
+</head>
+<body class="dark:bg-gray-900 font-sans text-gray-900 dark:text-gray-200 antialiased transition-colors duration-300">
+
+    <!-- SVG definíciók -->
+    <div class="hidden" id="icon-container"><!-- Ikonok a JS számára --><svg id="icon-check" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg><svg id="icon-x" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg><svg id="icon-info" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12v-.008z" /></svg><svg id="icon-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="animate-spin"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.667 0l3.181-3.183m-4.991-2.695v4.992h-4.992" /></svg><svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg><svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg></div>
+
+    <!-- FEJLÉC -->
+    <header class="bg-transparent text-black dark:text-white p-6 md:p-8 torn-edge-bottom relative z-20">
+        <div class="max-w-5xl mx-auto text-center relative">
+            <h1 class="font-display text-4xl md:text-6xl uppercase">MetaDepth</h1>
+            <button id="darkModeToggle" class="absolute top-0 right-0 p-3 rounded-full bg-blue-700 border-4 border-black brutal-btn shadow-hard">
+                <span class="w-8 h-8 block"><!-- Ikon --></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- VEZÉRLŐPULT -->
+    <section class="max-w-4xl mx-auto p-4 md:px-8 -mt-6 relative z-10">
+        <div class="bg-narancs text-white p-6 md:p-8 rounded-2xl border-4 border-black shadow-hard">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                <div class="md:col-span-2">
+                    <label for="targetUrl" class="block font-display text-lg uppercase tracking-wider mb-2">Cél URL</label>
+                    <input type="url" id="targetUrl" class="w-full text-black rounded-lg border-4 border-black bg-white p-3 focus:border-királykék focus:ring-0 shadow-hard">
+                </div>
+                <button id="analyzeButton" class="w-full bg-királykék text-white font-bold h-[60px] rounded-lg font-display text-xl uppercase border-4 border-black brutal-btn shadow-hard flex items-center justify-center disabled:bg-gray-400 disabled:shadow-none disabled:cursor-not-allowed">
+                    <span id="analyzeButtonText">Elemzés</span>
+                </button>
+            </div>
+            <div id="statusMessage" class="mt-6 text-center font-bold p-4 rounded-lg min-h-[60px] flex items-center justify-center border-4 border-black shadow-hard"></div>
+            
+            <!-- HALADÓ BEÁLLÍTÁSOK KAPCSOLÓVAL -->
+            <div class="mt-6 border-t-4 border-dashed border-black pt-6">
+                <label for="advancedToggle" class="flex items-center cursor-pointer">
+                    <span class="font-display uppercase text-lg">Haladó Beállítások</span>
+                    <div class="relative ml-auto">
+                        <input type="checkbox" id="advancedToggle" class="sr-only peer">
+                        <div class="block bg-white dark:bg-gray-700 w-20 h-10 rounded-full border-4 border-black"></div>
+                        <div class="dot absolute left-2 top-2 bg-királykék w-6 h-6 rounded-full transition-transform peer-checked:translate-x-10 border-4 border-black"></div>
+                    </div>
+                </label>
+                <div id="advancedSettings" class="hidden mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="pollingInterval" class="block font-display uppercase tracking-wider mb-2">Ellenőrzés</label>
+                        <select id="pollingInterval" class="w-full text-black rounded-lg border-4 border-black bg-white p-3 focus:border-királykék focus:ring-0 shadow-hard">
+                            <option value="0">Manuális</option><option value="1000">1 másodpercenként</option><option value="5000">5 másodpercenként</option><option value="10000">10 másodpercenként</option><option value="60000">1 percenként</option><option value="300000" selected>5 percenként</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="userAgent" class="block font-display uppercase tracking-wider mb-2">User-Agent</label>
+                        <select id="userAgent" class="w-full text-black rounded-lg border-4 border-black bg-white p-3 focus:border-királykék focus:ring-0 shadow-hard">
+                            <option value="default">Alapértelmezett</option><option value="googlebot">Googlebot</option><option value="iphone">iPhone</option>
+                        </select>
+                    </div>
+                </div>
+                <p id="pollingStatus" class="mt-4 text-sm text-center text-blue-100 font-bold"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- EREDMÉNYEK -->
+    <div id="resultsWrapper" class="max-w-7xl mx-auto p-4 mt-8">
+        <div class="bg-királykék p-2 torn-frame">
+            <main id="resultsContainer" class="bg-bézs dark:bg-gray-800 p-4 md:p-8 grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <!-- Skeleton loader, csak akkor látszik, ha nincs még eredmény -->
+                <div id="skeletonLoader" class="lg:col-span-5 w-full flex flex-col md:flex-row gap-8 animate-pulse">
+                    <div class="flex-1 space-y-6">
+                        <div class="h-8 bg-gray-300 dark:bg-gray-700 rounded w-2/3 mb-4"></div>
+                        <div class="h-48 bg-gray-200 dark:bg-gray-600 rounded-xl border-4 border-black"></div>
+                        <div class="h-6 bg-gray-300 dark:bg-gray-700 rounded w-1/2 mt-4"></div>
+                        <div class="h-4 bg-gray-200 dark:bg-gray-600 rounded w-3/4"></div>
+                    </div>
+                    <div class="flex-[2] grid grid-cols-2 md:grid-cols-3 gap-6">
+                        <div class="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg border-4 border-black"></div>
+                        <div class="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg border-4 border-black"></div>
+                        <div class="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg border-4 border-black"></div>
+                        <div class="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg border-4 border-black"></div>
+                        <div class="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg border-4 border-black"></div>
+                        <div class="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg border-4 border-black"></div>
+                    </div>
+                </div>
+                <!-- Dinamikus tartalom ide jön JS-ből -->
+            </main>
+        </div>
+    </div>
+    
+    <!-- LÁBLÉC -->
+    <footer class="bg-transparent text-black dark:text-white mt-16 p-8 torn-edge-top border-t-4 border-black">
+        <details class="mt-6 mx-auto max-w-xl text-left mb-4 text-base cursor-pointer select-none">
+                <summary class="font-bold font-display text-lg cursor-pointer">Miért nincs reklám, sütikezelő, vagy "Adatvédelmi Tájékoztató"?</summary>
+                <div class="mt-2 p-4 rounded-lg border-2 border-dashed border-orange-400 bg-orange-50 dark:bg-gray-800 text-black dark:text-orange-100">
+                    <p>Ez az oldal <b>nem követ</b>, <b>nem lopja el az adataidat</b>, és <b>nem jelenít meg reklámokat</b>.<br>
+                    Nincsenek idegesítő pop-upok, GDPR-para, vagy "Fogadd el a sütiket különben nem használhatod" üzenetek.<br>
+                    <span class="italic">Ha valami mégis eltűnne a böngésződből, az csak a jókedved lehetett!</span> 😁🍪<br>
+                    <b>Jó elemzést!</b>
+                    </p>
+                </div>
+            </details>
+        <div class="max-w-5xl mx-auto text-center">
+            <p class="font-display uppercase tracking-wide">MetaDepth v3.0</p>
+            <p class="text-orange-200 text-sm mt-2">Készítette: [V.N.]</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript - Logika változatlan, csak a UI interakciók finomítva -->
+         <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dom = {
+            html: document.documentElement, darkModeToggle: document.getElementById('darkModeToggle'), targetUrl: document.getElementById('targetUrl'),
+            analyzeButton: document.getElementById('analyzeButton'), analyzeButtonText: document.getElementById('analyzeButtonText'), statusMessage: document.getElementById('statusMessage'),
+            advancedToggle: document.getElementById('advancedToggle'), advancedSettings: document.getElementById('advancedSettings'),
+            pollingInterval: document.getElementById('pollingInterval'), userAgent: document.getElementById('userAgent'), pollingStatus: document.getElementById('pollingStatus'),
+            resultsWrapper: document.getElementById('resultsWrapper'), resultsContainer: document.getElementById('resultsContainer'), iconContainer: document.getElementById('icon-container'),
+        };
+        let timerId = null;
+        const SEO_CHECKS = [{ id: 'title', name: 'Címsor' }, { id: 'description', name: 'Leírás' },{ id: 'h1', name: 'H1 Címsor' },{ id: 'headings', name: 'Címsorok' },{ id: 'canonical', name: 'Kanonikus' },{ id: 'alt_tags', name: 'Alt Tagek' },{ id: 'language', name: 'Nyelv' },{ id: 'robots', name: 'Robots.txt' },{ id: 'sitemap', name: 'Sitemap' }];
+
+        function init() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                dom.html.classList.add('dark');
+            }
+            updateDarkModeIcon();
+            dom.darkModeToggle.addEventListener('click', toggleDarkMode);
+            dom.advancedToggle.addEventListener('change', () => dom.advancedSettings.classList.toggle('hidden'));
+            dom.analyzeButton.addEventListener('click', triggerAnalysis);
+            dom.targetUrl.addEventListener('keydown', (e) => { if (e.key === 'Enter') triggerAnalysis(); });
+            dom.pollingInterval.addEventListener('change', handlePollingChange);
+            setStatus('Adja meg a cél URL-t az elemzéshez!', 'default');
+        }
+
+        function toggleDarkMode() {
+            dom.html.classList.toggle('dark');
+            localStorage.setItem('theme', dom.html.classList.contains('dark') ? 'dark' : 'light');
+            updateDarkModeIcon();
+        }
+
+        function updateDarkModeIcon() {
+            const iconKey = dom.html.classList.contains('dark') ? '#icon-sun' : '#icon-moon';
+            dom.darkModeToggle.querySelector('span').innerHTML = dom.iconContainer.querySelector(iconKey).outerHTML;
+        }
+        
+        function setStatus(message, type = 'default') {
+            const typeClasses = {
+                'info': 'bg-blue-300 text-black', 'success': 'bg-green-300 text-black',
+                'error': 'bg-red-400 text-white', 'default': 'bg-white text-black'
+            };
+            dom.statusMessage.className = `mt-6 text-center font-bold p-4 rounded-lg min-h-[60px] flex items-center justify-center border-4 border-black shadow-hard ${typeClasses[type]}`;
+            dom.statusMessage.textContent = message;
+        }
+
+        function showSkeletonLoader() {
+            document.getElementById('resultsWrapper').classList.remove('hidden');
+            document.getElementById('skeletonLoader').style.display = '';
+            dom.resultsContainer.innerHTML = document.getElementById('skeletonLoader').outerHTML;
+        }
+        function hideSkeletonLoader() {
+            const skeleton = document.getElementById('skeletonLoader');
+            if (skeleton) skeleton.style.display = 'none';
+        }
+
+        function resetResultsUI() {
+            hideSkeletonLoader();
+            dom.resultsContainer.innerHTML = `<div class="lg:col-span-2 space-y-8"><h2 class="font-display text-3xl text-narancs">Social Előnézet</h2><div><h3 class="font-display text-xl mb-3 uppercase">Twitter</h3><div class="w-full bg-white dark:bg-gray-700 rounded-xl overflow-hidden border-4 border-black shadow-hard dark:shadow-hard-narancs"><div class="preview-image-container bg-bézs dark:bg-gray-600 flex items-center justify-center border-b-4 border-black"><img id="twitter-image" class="w-full h-full object-cover hidden"><p id="twitter-image-placeholder" class="text-gray-500 p-4 text-center"></p></div><div class="p-4"><p id="twitter-site-name" class="text-gray-500 text-sm truncate"></p><h4 id="twitter-title" class="font-bold text-base mt-1 truncate"></h4><p id="twitter-description" class="text-gray-600 dark:text-gray-400 text-sm mt-1 h-10 overflow-hidden"></p></div></div></div><div><h3 class="font-display text-xl mb-3 uppercase">Open Graph</h3><div class="w-full bg-bézs dark:bg-gray-700 rounded-xl overflow-hidden border-4 border-black shadow-hard dark:shadow-hard-narancs"><div class="preview-image-container bg-stone-200 dark:bg-gray-600 flex items-center justify-center"><img id="og-image" class="w-full h-full object-cover hidden"><p id="og-image-placeholder" class="text-gray-500 p-4 text-center"></p></div><div class="p-4 bg-white dark:bg-gray-700 border-t-4 border-black"><p id="og-site-name" class="text-gray-500 text-xs uppercase"></p><h4 id="og-title" class="font-bold text-lg mt-1 truncate"></h4><p id="og-description" class="text-gray-600 dark:text-gray-400 text-sm mt-1 h-10 overflow-hidden"></p></div></div></div></div><div class="lg:col-span-3"><h2 class="font-display text-3xl text-narancs mb-8">SEO Elemzés</h2><div id="seo-results-grid" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div></div>`;
+            const seoGrid = document.getElementById('seo-results-grid');
+            SEO_CHECKS.forEach(check => {
+                const card = document.createElement('div');
+                card.id = `seo-card-${check.id}`;
+                card.className = "p-4 rounded-lg border-4 border-black shadow-hard dark:shadow-hard-narancs flex flex-col justify-between transition-colors";
+                card.innerHTML = `<div><div class="flex items-center justify-between gap-2"><h4 class="font-display text-sm md:text-base uppercase">${check.name}</h4><div id="seo-icon-${check.id}" class="w-8 h-8 flex-shrink-0"></div></div><p id="seo-details-${check.id}" class="text-sm mt-2 text-gray-700 dark:text-gray-300 min-h-[40px] break-words"></p></div>`;
+                seoGrid.appendChild(card);
+                updateSeoCard(check.id, 'loading', 'Elemzés...');
+            });
+        }
+        
+        function updateSeoCard(id, status, details) {
+            const icon = document.getElementById(`seo-icon-${id}`);
+            const text = document.getElementById(`seo-details-${id}`);
+            const card = document.getElementById(`seo-card-${id}`);
+            const s = {
+                loading: { i: 'spinner', c: 'bg-bézs dark:bg-gray-700' }, success: { i: 'check', c: 'bg-green-300 dark:bg-green-800' },
+                warning: { i: 'x', c: 'bg-orange-300 dark:bg-orange-800' }, error: { i: 'x', c: 'bg-red-400 dark:bg-red-800' },
+                info: { i: 'info', c: 'bg-blue-300 dark:bg-blue-800' }
+            };
+            const config = s[status] || s.loading;
+            icon.innerHTML = dom.iconContainer.querySelector(`#icon-${config.i}`).outerHTML;
+            card.className = card.className.replace(/bg-\S+/g, '').replace(/dark:bg-\S+/g, '');
+            card.classList.add(...config.c.split(' '));
+            text.innerHTML = details;
+        }
+
+        async function analyzeUrl() {
+            let url;
+            try {
+                const val = dom.targetUrl.value.trim();
+                url = new URL(val.startsWith('http') ? val : `https://${val}`);
+            } catch (e) { setStatus('Érvénytelen URL!', 'error'); stopPolling(); return; }
+
+            dom.analyzeButton.disabled = true;
+            dom.analyzeButtonText.textContent = "Elemzés...";
+            if (!timerId) setStatus('Adatok lekérése...', 'info');
+            
+            resetResultsUI();
+            dom.resultsWrapper.classList.remove('hidden');
+
+            const proxy = (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`;
+            try {
+                const [main, robots] = await Promise.all([ fetch(proxy(url.href)), fetch(proxy(new URL('/robots.txt', url.origin).href)).catch(() => null) ]);
+                if (!main.ok) throw new Error(`Főoldal hiba: ${main.status}`);
+                const html = await main.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                processResults(doc, url, robots);
+                if(!timerId) setStatus('Elemzés kész!', 'success');
+            } catch (error) {
+                console.error(error);
+                setStatus(`Hiba: ${error.message}`, 'error');
+                stopPolling();
+            } finally {
+                dom.analyzeButton.disabled = false;
+                dom.analyzeButtonText.textContent = "Elemzés";
+            }
+        }
+        
+        async function processResults(doc, url, robotsResponse) {
+             const getMeta = (p) => doc.querySelector(`meta[property="${p}"], meta[name="${p}"]`)?.getAttribute('content') || null;
+            
+            const sD = { ogT: getMeta('og:title') || doc.title, ogD: getMeta('og:description'), ogI: getMeta('og:image'), ogS: getMeta('og:site_name') || url.hostname, twT: getMeta('twitter:title') || getMeta('og:title') || doc.title, twD: getMeta('twitter:description') || getMeta('og:description'), twI: getMeta('twitter:image') || getMeta('og:image') };
+            updateSocial(sD, url.href);
+
+            const title = doc.querySelector('title');
+            updateSeoCard('title', title ? 'success' : 'warning', `"${title?.textContent.slice(0, 60) || 'Hiányzik'}" (${title?.textContent.length || 0})`);
+            const desc = getMeta('description');
+            updateSeoCard('description', desc ? 'success' : 'warning', `"${desc?.slice(0, 150) || 'Hiányzik'}" (${desc?.length || 0})`);
+            const h1s = doc.querySelectorAll('h1');
+            updateSeoCard('h1', h1s.length === 1 ? 'success' : (h1s.length === 0 ? 'warning' : 'error'), `${h1s.length} db`);
+            updateSeoCard('headings', 'info', `H2:${doc.querySelectorAll('h2').length}, H3:${doc.querySelectorAll('h3').length}`);
+            const can = doc.querySelector('link[rel="canonical"]');
+            updateSeoCard('canonical', can ? 'success' : 'warning', can ? `<code class="text-xs">${can.href.slice(0,30)}...</code>` : 'Hiányzik');
+            const imgs = doc.querySelectorAll('img');
+            const noAlt = Array.from(imgs).filter(i => !i.alt?.trim());
+            updateSeoCard('alt_tags', noAlt.length === 0 ? 'success' : 'warning', `${noAlt.length} / ${imgs.length} hiányzik.`);
+            const lang = doc.documentElement.lang;
+            updateSeoCard('language', lang ? 'success' : 'info', lang || 'Nincs');
+            
+            const robotsTxt = robotsResponse?.ok ? await robotsResponse.text() : null;
+            updateSeoCard('robots', robotsTxt ? 'success' : 'warning', robotsTxt ? 'OK' : 'Hiányzik');
+            const sitemapPath = robotsTxt?.match(/^Sitemap:\s*(.*)$/im)?.[1].trim() || '/sitemap.xml';
+            const sitemapRes = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(new URL(sitemapPath, url.origin).href)}`).catch(()=>null);
+            updateSeoCard('sitemap', sitemapRes?.ok ? 'success' : 'warning', sitemapRes?.ok ? 'OK' : 'Hiányzik');
+        }
+
+        function updateSocial(data, baseUrl) {
+            const updImg = (img, plh, u) => {
+                const i = document.getElementById(img.id), p = document.getElementById(plh.id);
+                if(u) {
+                    try { i.src = new URL(u, baseUrl).href; i.classList.remove('hidden'); p.classList.add('hidden'); }
+                    catch(e){ p.textContent = 'Hibás URL'; }
+                } else { p.textContent = 'Nincs kép'; }
+            };
+            updImg(document.getElementById('twitter-image'), document.getElementById('twitter-image-placeholder'), data.twI);
+            document.getElementById('twitter-site-name').textContent = data.ogS; document.getElementById('twitter-title').textContent = data.twT; document.getElementById('twitter-description').textContent = data.twD;
+            updImg(document.getElementById('og-image'), document.getElementById('og-image-placeholder'), data.ogI);
+            document.getElementById('og-site-name').textContent = data.ogS.toUpperCase(); document.getElementById('og-title').textContent = data.ogT; document.getElementById('og-description').textContent = data.ogD;
+        }
+
+        function triggerAnalysis() { stopPolling(); analyzeUrl(); handlePollingChange(); }
+        function handlePollingChange() {
+            stopPolling();
+            const interval = parseInt(dom.pollingInterval.value, 10);
+            if (interval > 0) {
+                timerId = setInterval(analyzeUrl, interval);
+                dom.pollingStatus.textContent = `Automatikus újraelemzés ${interval/1000}s-ként.`;
+            }
+        }
+        function stopPolling() {
+            if (timerId) { clearInterval(timerId); timerId = null; dom.pollingStatus.textContent = ''; }
+        }
+        
+        init();
+        // Mutassa a skeleton loadert induláskor
+        showSkeletonLoader();
+    });
+    </script>
+</body>
+</html>
